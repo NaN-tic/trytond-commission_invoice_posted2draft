@@ -1,19 +1,24 @@
 #!/usr/bin/env python
-# This file is part of commission_invoice_posted2draft module for Tryton.
-# The COPYRIGHT file at the top level of this repository contains the full
-# copyright notices and license terms.
+# This file is part commission_invoice_posted2draft module for Tryton.
+# The COPYRIGHT file at the top level of this repository contains
+# the full copyright notices and license terms.
 
 from setuptools import setup
 import re
 import os
-import ConfigParser
+import io
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
 
 MODULE2PREFIX = {}
 
 
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
+    return io.open(
+        os.path.join(os.path.dirname(__file__), fname),
+        'r', encoding='utf-8').read()
 
 def get_require_version(name):
     if minor_version % 2:
@@ -24,7 +29,7 @@ def get_require_version(name):
         major_version, minor_version + 1)
     return require
 
-config = ConfigParser.ConfigParser()
+config = ConfigParser()
 config.readfp(open('tryton.cfg'))
 info = dict(config.items('tryton'))
 for key in ('depends', 'extras_depend', 'xml'):
@@ -35,8 +40,7 @@ major_version, minor_version, _ = version.split('.', 2)
 major_version = int(major_version)
 minor_version = int(minor_version)
 name = 'trytonzz_commission_invoice_posted2draft'
-download_url = ('https://bitbucket.org/zikzakmedia/'
-    'trytond-commission_invoice_posted2draft')
+download_url = 'https://bitbucket.org/zikzakmedia/trytond-commission_invoice_posted2draft'
 
 requires = []
 for dep in info.get('depends', []):
@@ -53,15 +57,13 @@ if minor_version % 2:
 
 setup(name=name,
     version=version,
-    description='Tryton module that deletes commissions invoices that have '
-        'been confirmed, re-drafted, and re-confirmed in order not to '
-        'duplicate commissions.',
+    description='Tryton Commission Invoice Posted2Draft Module',
     long_description=read('README'),
     author='Zikzakmedia SL',
     author_email='zikzak@zikzakmedia.com',
     url='https://bitbucket.org/zikzakmedia/',
     download_url=download_url,
-    keywords='Accounting Invoicing Commission',
+    keywords='',
     package_dir={'trytond.modules.commission_invoice_posted2draft': '.'},
     packages=[
         'trytond.modules.commission_invoice_posted2draft',
@@ -95,6 +97,9 @@ setup(name=name,
         'Natural Language :: Spanish',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Office/Business',
@@ -110,4 +115,5 @@ setup(name=name,
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',
     tests_require=tests_require,
+    use_2to3=True,
     )
